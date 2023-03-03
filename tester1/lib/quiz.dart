@@ -19,8 +19,10 @@ class Quiz extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Question(questions[questionIndex]['questionText'] as String),
-        ...(questions[questionIndex]['answers'] as List<String>).map((answer) {
-          return Answer(changeQuestion(), answer);
+        ...(questions[questionIndex]['answers'] as List<Map<String, Object>>)
+            .map((answer) {
+          return Answer(() => changeQuestion(answer['score'] as int),
+              answer['text'] as String);
         }).toList(),
       ],
     );

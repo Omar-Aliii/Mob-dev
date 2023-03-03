@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tester1/answer.dart';
 import 'quiz.dart';
+import 'result.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,21 +34,43 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final questions = const [
     {
-      'questionText': 'What\'s your favourite color?',
-      'answers': ['Red', 'Green', 'Blue', 'Yellow'],
+      'questionText': 'Which team has the most champions leagues?',
+      'answers': [
+        {'text': 'Bayern Munich', 'score': 0},
+        {'text': 'Real Madrid', 'score': 1},
+        {'text': 'Liverpool', 'score': 0},
+        {'text': 'Zamalek', 'score': 0},
+      ],
     },
     {
       'questionText': 'What\'s your favourite Footballer?',
-      'answers': ['Ronaldo', 'Messi', 'Salah', 'Mbappe'],
+      'answers': [
+        {'text': 'Ronaldo', 'score': 1000},
+        {'text': 'Messi', 'score': -1000},
+        {'text': 'Neymar', 'score': 0},
+        {'text': 'Salah', 'score': 0},
+      ],
     },
     {
       'questionText': 'What\'s your favourite color?',
-      'answers': ['Red', 'Black', 'Blue'],
+      'answers': [
+        {'text': 'Red', 'score': 1},
+        {'text': 'Blue', 'score': 1},
+        {'text': 'Black', 'score': 1},
+      ],
     },
   ];
   var questionnn = 0;
+  var totalScore = 0;
+  void _resetQuiz() {
+    setState(() {
+      questionnn = 0;
+      totalScore = 0;
+    });
+  }
 
-  void _changeQuestion() {
+  void _changeQuestion(int score) {
+    totalScore += score;
     setState(() {
       questionnn++;
     });
@@ -56,17 +79,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: questionnn < questions.length
-            ? Quiz(
-                changeQuestion: _changeQuestion,
-                questionIndex: questionnn,
-                questions: questions,
-              )
-            : const Center(
-                child: Text('You did it'),
-              ));
+      appBar: AppBar(
+        title: Text(widget.title),
+      ),
+      body: questionnn < questions.length
+          ? Quiz(
+              changeQuestion: _changeQuestion,
+              questionIndex: questionnn,
+              questions: questions,
+            )
+          : Result(totalScore, _resetQuiz),
+    );
   }
 }
