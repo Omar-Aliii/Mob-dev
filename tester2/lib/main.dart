@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './transaction.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +20,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
+  final titleController = TextEditingController();
+  final amountController = TextEditingController();
+
   final List<Transaction> transactions = [
     Transaction(
       id: 1,
@@ -43,6 +47,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Flutter App'),
       ),
@@ -58,6 +63,38 @@ class MyHomePage extends StatelessWidget {
               child: Text('CHART!'),
             ),
           ),
+          Card(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: InputDecoration(
+                    hintText: 'title',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                TextField(
+                  controller: amountController,
+                  decoration: InputDecoration(
+                    hintText: 'amount',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    print(titleController.text);
+                    print(amountController.text);
+                  },
+                  child: Text(
+                    'add Trans',
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           Column(
             children: transactions.map((e) {
               return Card(
@@ -65,19 +102,19 @@ class MyHomePage extends StatelessWidget {
                   children: <Widget>[
                     // ignore: avoid_unnecessary_containers
                     Container(
-                      margin: EdgeInsets.all(10),
+                      margin: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
                         border: Border.all(
                           color: Colors.red,
                           width: 2,
                         ),
                       ),
-                      padding: EdgeInsets.all(10),
+                      padding: const EdgeInsets.all(10),
                       child: Center(
                         child: Text(
                           '\$${e.amount}',
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
                           ),
@@ -89,14 +126,14 @@ class MyHomePage extends StatelessWidget {
                       children: <Widget>[
                         Text(
                           e.title,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                         Text(
                           DateFormat().add_yMMMMd().format(e.date),
-                          style: TextStyle(color: Colors.grey),
+                          style: const TextStyle(color: Colors.grey),
                         ),
                       ],
                     )
