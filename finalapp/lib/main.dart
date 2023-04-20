@@ -1,76 +1,165 @@
-import './transactions.dart';
+// ignore_for_file: avoid_unnecessary_containers, prefer_const_constructors, duplicate_ignore, unused_import, sized_box_for_whitespace, prefer_const_literals_to_create_immutables
+
+import 'package:finalapp/widgets/chart.dart';
+import 'package:finalapp/widgets/new_transaction.dart';
+
+import 'models/transaction.dart';
+import 'widgets/transaction_list.dart';
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  const MyApp({Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    // ignore: prefer_const_constructors
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
+        accentColor: Colors.purple,
+        fontFamily: 'LemonMilk',
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      title: 'Flutter App',
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+  const MyHomePage({Key key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transactions> transactions = [
-    Transactions(
-      id: 't1',
-      title: 'New Shoes',
-      amount: 69.99,
-      date: DateTime.now(),
-    ),
-    Transactions(
-      id: 't2',
-      title: 'New Shoes2',
-      amount: 79.99,
-      date: DateTime.now(),
-    ),
+  final String title = "Expenses app";
+
+  final List<Transaction> _userTransactions = [
+    // Transaction(
+    //   id: 't1',
+    //   title: 'New Shoes',
+    //   amount: 69.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't2',
+    //   title: 'New Shoes2',
+    //   amount: 79.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't1',
+    //   title: 'New Shoes',
+    //   amount: 69.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't2',
+    //   title: 'New Shoes2',
+    //   amount: 79.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't1',
+    //   title: 'New Shoes',
+    //   amount: 69.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't2',
+    //   title: 'New Shoes2',
+    //   amount: 79.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't1',
+    //   title: 'New Shoes',
+    //   amount: 69.99,
+    //   date: DateTime.now(),
+    // ),
+    // Transaction(
+    //   id: 't2',
+    //   title: 'New Shoes2',
+    //   amount: 79.99,
+    //   date: DateTime.now(),
+    // ),
   ];
+
+  List<Transaction> get _recentTransactions {
+    return _userTransactions.where(
+      (tx) {
+        return tx.date.isAfter(
+          DateTime.now().subtract(
+            Duration(days: 7),
+          ),
+        );
+      },
+    ).toList();
+  }
+
+  void _addNewTransaction(String txTitle, double txAmount) {
+    final newTx = Transaction(
+      id: DateTime.now().toString(),
+      title: txTitle,
+      amount: txAmount,
+      date: DateTime.now(),
+    );
+
+    setState(() {
+      _userTransactions.add(newTx);
+    });
+  }
+
+  void startAddnewTransaction(BuildContext ctx) {
+    showModalBottomSheet(
+      context: ctx,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          behavior: HitTestBehavior.opaque,
+          child: NewTransaction(_addNewTransaction),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          // ignore: sized_box_for_whitespace
-          Container(
-            width: double.infinity,
-            // ignore: prefer_const_constructors
-            child: Card(
-              color: Colors.blue,
-              // ignore: prefer_const_constructors, sort_child_properties_last
-              child: Text('Chart!'),
-              elevation: 5,
+        title: Text(title),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () => startAddnewTransaction(context),
+            icon: Icon(
+              Icons.add,
             ),
-          ),
-          // ignore: prefer_const_constructors
-          Column(
-            children: transactions.map((tx) {
-              return Card(
-                child: Text(tx.id),
-              );
-            }).toList(),
-          ),
+          )
         ],
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            // ignore: sized_box_for_whitespace
+            Container(
+              height: 200,
+              child: Chart(_recentTransactions),
+            ),
+            TransactionList(_userTransactions),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => startAddnewTransaction(context),
+        child: Icon(
+          Icons.add,
+        ),
       ),
     );
   }
